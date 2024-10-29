@@ -1,0 +1,11 @@
+footer {
+  background-color: #343a40; /* Dark background */
+}
+
+footer a {
+  text-decoration: none; /* Remove underline from links */
+}
+
+footer a:hover {
+  text-decoration: underline; /* Underline on hover */
+}
