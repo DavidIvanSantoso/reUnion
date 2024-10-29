@@ -1,17 +1,117 @@
-import { Container, Row } from "react-bootstrap";
+import { Card, Container, Row } from "react-bootstrap";
 import NavbarTop from "../Navbar/Navbar";
+import "../Scoring/Scoring.css";
+import DataTable from "react-data-table-component";
+import { data } from "../assets/mockdata/scoring";
 
 function Scoring() {
+  //scoring-table
+  const tableHeader = [
+    {
+      name: "Nama",
+      selector: (row) => row.nama,
+    },
+    {
+      name: "Kategori",
+      selector: (row) => (
+        <span
+          className={`badge rounded-pill ${getKategoriColor(row.kategori)}`}
+        >
+          {row.kategori}
+        </span>
+      ),
+    },
+    {
+      name: "Lagu 1",
+      selector: (row) => row.lagu1,
+      sortable: true,
+    },
+    {
+      name: "Lagu 2",
+      selector: (row) => row.lagu2,
+      sortable: true,
+    },
+    {
+      name: "Total Skor",
+      selector: (row) => row.totalskor,
+      sortable: true,
+    },
+  ];
+  const getKategoriColor = (kategori) => {
+    switch (kategori) {
+      case "Expert":
+        return "bg-dark";
+      case "Novice":
+        return "bg-success";
+      case "Intermediate":
+        return "bg-warning";
+      case "Advanced":
+        return "bg-danger";
+    }
+  };
+  const customStylesTable = {
+    rows: {
+      style: {
+        minHeight: "72px", // override the row height
+        backgroundColor: "#gray", // row background color
+        "&:hover": {
+          backgroundColor: "#d3e3fd", // background color on hover
+        },
+      },
+    },
+    headCells: {
+      style: {
+        backgroundColor: "black", // header background color
+        color: "white", // header text color
+        fontSize: "18px", // font size for header
+      },
+    },
+    cells: {
+      style: {
+        fontSize: "16px",
+        paddingLeft: "8px", // cell padding
+        paddingRight: "8px",
+      },
+    },
+  };
   return (
-    <Container fluid>
-      <div className="navbar">
+    <Container fluid className="scoring-container">
+      <div className="navbar-row">
+        <NavbarTop></NavbarTop>
+      </div>
+
+      <div className="upcoming-scoring pt-3 px-5">
         <Row>
-          <NavbarTop></NavbarTop>
+          <h1>Upcoming Scoring!</h1>
+          <Card style={{ width: "100%" }} className="mt-3">
+            <Card.Body>
+              <Card.Title>⚜ SCORING RE:UNION EP. 16 - SINGLE ⚜</Card.Title>
+              <p>📅 Date: 26 Oktober 2024</p>
+              <p>📍Location: Timezone Galaxy Mall 1</p>
+              <p>🕔 Time: 17.00</p>
+
+              <span className="badge bg-success me-2">Novice (S8-S11)</span>
+              <span className="badge bg-warning me-2">
+                Intermediate (S12 - S14)
+              </span>
+              <span className="badge bg-danger me-2">Advanced (S15 - S17)</span>
+              <span className="badge bg-dark me-2">Expert (S18 - S20)</span>
+            </Card.Body>
+          </Card>
         </Row>
       </div>
-      <div className="upcoming-scoring">
+      <div className="recent-result pt-5 px-5 mb-3">
         <Row>
-          <h1>Next Scoring!</h1>
+          <h1>Recent Scoring Result!</h1>
+          <h3 className="pt-3">⚜ SCORING RE:UNION EP. 15 - SINGLE ⚜</h3>
+        </Row>
+        <Row>
+          <DataTable
+            columns={tableHeader}
+            data={data}
+            customStyles={customStylesTable}
+            pagination
+          ></DataTable>
         </Row>
       </div>
     </Container>
