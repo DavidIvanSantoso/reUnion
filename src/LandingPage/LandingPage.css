@@ -1,0 +1,98 @@
+/* LandingPage.css */
+.landing-page-container {
+  height: 100vh;
+  background-image: url("../assets/introduction.png");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  padding: 0%;
+  margin: 0%;
+}
+.box-container,
+.navbar,
+.landing-page-content {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.box-container {
+  margin: 0%;
+  padding: 0%;
+}
+.landing-page-content {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  width: 32px;
+  height: auto;
+  margin-bottom: 20px;
+}
+.title,
+.subtitle {
+  color: white;
+}
+
+/* Larger screens */
+@media (min-width: 768px) {
+  .logo {
+    width: 20rem;
+  }
+  .title {
+    font-size: 2.5rem;
+  }
+  .subtitle {
+    font-size: 1.5rem;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 767px) {
+  .logo {
+    width: 20rem;
+  }
+  .landing-page-container {
+    text-align: center;
+  }
+  .title {
+    font-size: 1.8rem;
+  }
+  .subtitle {
+    font-size: 1.2rem;
+  }
+  .learn-more-btn {
+    width: 50%; /* Full width button on mobile */
+    margin-top: 15px;
+  }
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  overflow-x: hidden; /* Prevents horizontal scrolling */
+}
+
+.goals-icon {
+  display: flex;
+  justify-content: center; /* Center icons horizontally */
+  gap: 20px; /* Space between each icon, adjust as needed */
+}
+
+.icon-circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px; /* Adjust size as needed */
+  height: 80px; /* Adjust size as needed */
+  border-radius: 50%; /* Makes the div circular */
+
+  color: white; /* Icon color */
+}
