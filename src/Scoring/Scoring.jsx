@@ -4,7 +4,21 @@ import "../Scoring/Scoring.css";
 import DataTable from "react-data-table-component";
 import { data } from "../assets/mockdata/scoring";
 
+import { useEffect } from "react";
+
+//redux
+import { useDispatch, useSelector } from "react-redux";
+import { getUpcomingScoring } from "../redux/slices/scoringSlice.js";
+
 function Scoring() {
+  // const [upcomingScoring, setUpcomingScoring] = useState(null);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { upcomingScoring, loading, error } = useSelector(
+    (state) => state.scoring
+  );
+
   //scoring-table
   const tableHeader = [
     {
@@ -74,6 +88,28 @@ function Scoring() {
       },
     },
   };
+
+  // //fetch Upcoming Scoring
+  // const getUpcomingScoring = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "http://localhost:8080/getLastScoringEp"
+  //     );
+  //     setUpcomingScoring(response.data);
+  //   } catch (err) {
+  //     setError(err.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  //get UpcomingScoring using redux
+  useEffect(() => {
+    dispatch(getUpcomingScoring()); // Dispatch the action to fetch data
+  }, [dispatch]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
   return (
     <Container fluid className="scoring-container">
       <div className="navbar-row">
@@ -85,10 +121,13 @@ function Scoring() {
           <h1>Upcoming Scoring!</h1>
           <Card style={{ width: "100%" }} className="mt-3">
             <Card.Body>
-              <Card.Title>⚜ SCORING RE:UNION EP. 16 - SINGLE ⚜</Card.Title>
-              <p>📅 Date: 26 Oktober 2024</p>
-              <p>📍Location: Timezone Galaxy Mall 1</p>
-              <p>🕔 Time: 17.00</p>
+              <Card.Title>
+                ⚜ SCORING RE:UNION EP. {upcomingScoring.scoringep_id} -{" "}
+                {upcomingScoring.scoringtype} ⚜
+              </Card.Title>
+              <p>📅 Date: {upcomingScoring.date}</p>
+              <p>📍Location: {upcomingScoring.location}</p>
+              <p>🕔 Time: {upcomingScoring.time}</p>
 
               <span className="badge bg-success me-2">Novice (S8-S11)</span>
               <span className="badge bg-warning me-2">

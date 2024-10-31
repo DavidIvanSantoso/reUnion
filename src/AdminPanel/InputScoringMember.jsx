@@ -9,26 +9,26 @@ import SidebarAdmin from "./SidebarAdmin";
 import axios from "axios";
 
 function InputScoringMember() {
-  const [nama, setNama] = useState("");
+  const [namamember, setNama] = useState("");
   const [kategori, setKategori] = useState("");
-  const [lagu1, setLagu1] = useState("");
-  const [lagu2, setLagu2] = useState("");
+  const [skor1, setLagu1] = useState(null);
+  const [skor2, setLagu2] = useState(null);
   const [totalskor, setTotalSkor] = useState("");
-  const [scoringEp, setScoringEp] = useState("");
+  const [scoringep_id, setScoringEp] = useState("");
 
   const handleFormInput = async (e) => {
     e.preventDefault();
-    const totalScore = parseFloat(lagu1) + parseFloat(lagu2);
+    const totalScore = parseFloat(skor1) + parseFloat(skor2);
     setTotalSkor(totalScore);
     try {
       // Send form data to the server
-      const response = await axios.post("https://api.example.com/submit", {
-        nama,
+      const response = await axios.post("http://localhost:8080/addUserRes", {
+        namamember,
         kategori,
-        lagu1,
-        lagu2,
+        skor1,
+        skor2,
         totalskor: totalScore,
-        scoringEp,
+        scoringep_id,
       });
 
       // Handle the response
@@ -74,14 +74,18 @@ function InputScoringMember() {
                 <div className="form-alert-scoring">
                   <Card>
                     <CardBody>
-                      <Form>
+                      <Form onSubmit={handleFormInput}>
                         <Form.Group className="mb-3 ">
                           <Form.Label>Scoring Episode</Form.Label>
                           <Form.Select
-                            value={scoringEp}
-                            onChange={(e) => setScoringEp(e.target.value)}
+                            value={scoringep_id}
+                            onChange={(e) =>
+                              setScoringEp(parseInt(e.target.value))
+                            } // Ensure this converts the value to an integer
                           >
-                            <option>Episode 1</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
                           </Form.Select>
                         </Form.Group>
 
@@ -90,7 +94,7 @@ function InputScoringMember() {
                           <Form.Control
                             type="text"
                             placeholder="Enter Name"
-                            value={nama}
+                            value={namamember}
                             onChange={(e) => setNama(e.target.value)}
                           />
                         </Form.Group>
@@ -111,8 +115,8 @@ function InputScoringMember() {
                           <Form.Control
                             type="number"
                             placeholder="Enter Score 1"
-                            value={lagu1}
-                            onChange={(e) => setLagu1(e.target.value)}
+                            value={skor1}
+                            onChange={(e) => setLagu1(parseInt(e.target.value))}
                           />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -120,8 +124,8 @@ function InputScoringMember() {
                           <Form.Control
                             type="number"
                             placeholder="Enter Score 1"
-                            value={lagu2}
-                            onChange={(e) => setLagu2(e.target.value)}
+                            value={skor2}
+                            onChange={(e) => setLagu2(parseInt(e.target.value))}
                           />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -137,7 +141,6 @@ function InputScoringMember() {
                           variant="primary"
                           type="submit"
                           className="mt-3"
-                          onClick={handleFormInput}
                         >
                           Submit
                         </Button>
