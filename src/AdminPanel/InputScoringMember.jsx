@@ -1,20 +1,25 @@
 import { Card, CardBody, Container, Row } from "react-bootstrap";
-
 import "../AdminPanel/AdminDashboard.css";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "react-datepicker/dist/react-datepicker.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SidebarAdmin from "./SidebarAdmin";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllScoringEp } from "../redux/slices/scoringSlice";
 
 function InputScoringMember() {
   const [namamember, setNama] = useState("");
-  const [kategori, setKategori] = useState("");
+  const [kategori, setKategori] = useState("Novice");
   const [skor1, setLagu1] = useState(null);
   const [skor2, setLagu2] = useState(null);
   const [totalskor, setTotalSkor] = useState("");
-  const [scoringep_id, setScoringEp] = useState("");
+  const [scoringep_id, setScoringEp] = useState(1);
+
+  //redux setting
+  const dispatch = useDispatch();
+  const { scoringEp } = useSelector((state) => state.scoring);
 
   const handleFormInput = async (e) => {
     e.preventDefault();
@@ -41,6 +46,10 @@ function InputScoringMember() {
       alert("There was an error submitting the form.");
     }
   };
+  //fetch data dari redux
+  useEffect(() => {
+    dispatch(getAllScoringEp()); // Dispatch the action to fetch data
+  }, [dispatch]);
 
   return (
     <>
@@ -83,9 +92,17 @@ function InputScoringMember() {
                               setScoringEp(parseInt(e.target.value))
                             } // Ensure this converts the value to an integer
                           >
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
+                            {(Array.isArray(scoringEp) ? scoringEp : []).map(
+                              (episode) => (
+                                <option
+                                  key={episode.scoringep_id}
+                                  value={episode.scoringep_id}
+                                >
+                                  {episode.scoringep_id} - {episode.title} -{" "}
+                                  {episode.date}
+                                </option>
+                              )
+                            )}
                           </Form.Select>
                         </Form.Group>
 
@@ -104,10 +121,10 @@ function InputScoringMember() {
                             value={kategori}
                             onChange={(e) => setKategori(e.target.value)}
                           >
-                            <option>Novice</option>
-                            <option>Intermediate</option>
-                            <option>Advanced</option>
-                            <option>Expert</option>
+                            <option value="Novice">Novice</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                            <option value="Expert">Expert</option>
                           </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formBasicEmail">

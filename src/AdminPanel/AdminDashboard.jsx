@@ -17,9 +17,9 @@ function AdminDashboard() {
 
   const [date, setSelectedDate] = useState(null);
   const [title, setScoringTitle] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState("Timezone GM 1");
   const [time, setTime] = useState("");
-  const [scoringtype, setScoringType] = useState("");
+  const [scoringtype, setScoringType] = useState("Single");
 
   const handleFormInput = async (e) => {
     e.preventDefault();
@@ -31,7 +31,7 @@ function AdminDashboard() {
       scoringtype,
       date,
     };
-
+    console.log("SCORING TYPE", scoringEpData.scoringtype);
     await dispatch(postScoringEp(scoringEpData));
   };
 

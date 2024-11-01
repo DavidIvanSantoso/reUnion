@@ -2,20 +2,22 @@ import { Card, Container, Row } from "react-bootstrap";
 import NavbarTop from "../Navbar/Navbar";
 import "../Scoring/Scoring.css";
 import DataTable from "react-data-table-component";
-import { data } from "../assets/mockdata/scoring";
 
 import { useEffect } from "react";
 
 //redux
 import { useDispatch, useSelector } from "react-redux";
-import { getUpcomingScoring } from "../redux/slices/scoringSlice.js";
+import {
+  getUpcomingScoring,
+  getScoringResultLastEpisode,
+} from "../redux/slices/scoringSlice.js";
 
 function Scoring() {
   // const [upcomingScoring, setUpcomingScoring] = useState(null);
   // const [loading, setLoading] = useState(true);
   // const [error, setError] = useState(null);
   const dispatch = useDispatch();
-  const { upcomingScoring, loading, error } = useSelector(
+  const { upcomingScoring, scoringResultLastEp, loading, error } = useSelector(
     (state) => state.scoring
   );
 
@@ -23,7 +25,7 @@ function Scoring() {
   const tableHeader = [
     {
       name: "Nama",
-      selector: (row) => row.nama,
+      selector: (row) => row.namamember,
     },
     {
       name: "Kategori",
@@ -37,12 +39,12 @@ function Scoring() {
     },
     {
       name: "Lagu 1",
-      selector: (row) => row.lagu1,
+      selector: (row) => row.skor1,
       sortable: true,
     },
     {
       name: "Lagu 2",
-      selector: (row) => row.lagu2,
+      selector: (row) => row.skor2,
       sortable: true,
     },
     {
@@ -105,7 +107,8 @@ function Scoring() {
 
   //get UpcomingScoring using redux
   useEffect(() => {
-    dispatch(getUpcomingScoring()); // Dispatch the action to fetch data
+    dispatch(getUpcomingScoring());
+    dispatch(getScoringResultLastEpisode()); // Dispatch the action to fetch data
   }, [dispatch]);
 
   if (loading) return <div>Loading...</div>;
@@ -142,12 +145,15 @@ function Scoring() {
       <div className="recent-result pt-5 px-5 mb-3">
         <Row>
           <h1>Recent Scoring Result!</h1>
-          <h3 className="pt-3">⚜ SCORING RE:UNION EP. 15 - SINGLE ⚜</h3>
+          <h3 className="pt-3">
+            ⚜ SCORING RE:UNION EP {scoringResultLastEp[0].scoringep_id} -{" "}
+            {scoringResultLastEp[0].scoringtype}⚜
+          </h3>
         </Row>
         <Row>
           <DataTable
             columns={tableHeader}
-            data={data}
+            data={Array.isArray(scoringResultLastEp) ? scoringResultLastEp : []}
             customStyles={customStylesTable}
             pagination
           ></DataTable>

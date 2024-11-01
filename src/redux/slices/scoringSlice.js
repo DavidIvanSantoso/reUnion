@@ -19,12 +19,30 @@ export const postScoringEp = createAsyncThunk(
     return response.data;
   }
 );
+export const getScoringResultLastEpisode = createAsyncThunk(
+  "scoring/getScoringResultLastEpisode",
+  async () => {
+    const response = await axios.get(
+      "http://localhost:8080/getScoringResultLastEpisode"
+    );
+    return response.data; // Assuming the API response returns the data directly
+  }
+);
+export const getAllScoringEp = createAsyncThunk(
+  "scoring/getAllScoringEp",
+  async () => {
+    const response = await axios.get("http://localhost:8080/getScoringEp");
+    return response.data; // Assuming the API response returns the data directly
+  }
+);
 
 // Create a slice for scoring
 const scoringSlice = createSlice({
   name: "scoring",
   initialState: {
     upcomingScoring: {},
+    scoringResultLastEp: {},
+    scoringEp: {},
     loading: false,
     error: null,
     postSuccess: false, // Add state to track the success of posting
@@ -38,6 +56,7 @@ const scoringSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      //handle getUpcoming Scoring
       .addCase(getUpcomingScoring.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -47,6 +66,32 @@ const scoringSlice = createSlice({
         state.upcomingScoring = action.payload; // Store the fetched data
       })
       .addCase(getUpcomingScoring.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message; // Capture any errors
+      })
+      //handle getScoringResult Last Episode
+      .addCase(getScoringResultLastEpisode.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getScoringResultLastEpisode.fulfilled, (state, action) => {
+        state.loading = false;
+        state.scoringResultLastEp = action.payload; // Store the fetched data
+      })
+      .addCase(getScoringResultLastEpisode.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message; // Capture any errors
+      })
+      //handle getAllScoringEP
+      .addCase(getAllScoringEp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getAllScoringEp.fulfilled, (state, action) => {
+        state.loading = false;
+        state.scoringEp = action.payload; // Store the fetched data
+      })
+      .addCase(getAllScoringEp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message; // Capture any errors
       })
