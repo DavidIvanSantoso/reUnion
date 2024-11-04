@@ -8,7 +8,12 @@ function NavbarTop() {
     <>
       <Navbar bg="black" variant="dark" expand="lg">
         <Container>
-          <Navbar.Brand href="#home" className="d-flex align-items-center">
+          <Navbar.Brand
+            as={Link}
+            to="/"
+            href="#home"
+            className="d-flex align-items-center"
+          >
             <img
               src={logo}
               width="50px"

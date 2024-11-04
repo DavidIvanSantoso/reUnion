@@ -1,25 +1,33 @@
-import { Card, Container, Row } from "react-bootstrap";
+import { Card, Container, Row, Col, Form } from "react-bootstrap";
 import NavbarTop from "../Navbar/Navbar";
 import "../Scoring/Scoring.css";
 import DataTable from "react-data-table-component";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 //redux
 import { useDispatch, useSelector } from "react-redux";
 import {
   getUpcomingScoring,
   getScoringResultLastEpisode,
+  getAllScoringEp,
+  getScoringResultByEpisode,
 } from "../redux/slices/scoringSlice.js";
 
 function Scoring() {
   // const [upcomingScoring, setUpcomingScoring] = useState(null);
   // const [loading, setLoading] = useState(true);
   // const [error, setError] = useState(null);
+  const [scoringEpID, setscoringEpID] = useState("");
   const dispatch = useDispatch();
-  const { upcomingScoring, scoringResultLastEp, loading, error } = useSelector(
-    (state) => state.scoring
-  );
+  const {
+    upcomingScoring,
+    scoringResultLastEp,
+    loading,
+    error,
+    scoringEp,
+    scoringResultByEpId,
+  } = useSelector((state) => state.scoring);
 
   //scoring-table
   const tableHeader = [
@@ -107,9 +115,16 @@ function Scoring() {
 
   //get UpcomingScoring using redux
   useEffect(() => {
+    if (scoringEpID) {
+      dispatch(getScoringResultByEpisode(scoringEpID));
+    }
+  }, [scoringEpID, dispatch]);
+
+  useEffect(() => {
     dispatch(getUpcomingScoring());
-    dispatch(getScoringResultLastEpisode()); // Dispatch the action to fetch data
-  }, [dispatch]);
+    dispatch(getAllScoringEp());
+    dispatch(getScoringResultLastEpisode());
+  }, [dispatch]); // Run only once on component mount
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -145,15 +160,59 @@ function Scoring() {
       <div className="recent-result pt-5 px-5 mb-3">
         <Row>
           <h1>Recent Scoring Result!</h1>
-          <h3 className="pt-3">
-            ⚜ SCORING RE:UNION EP {scoringResultLastEp[0].scoringep_id} -{" "}
-            {scoringResultLastEp[0].scoringtype}⚜
-          </h3>
+          <Row className="pt-3">
+            <Col xs={12} md={7}>
+              {/* slalu cek dulu apakah data kosong ato nda  */}
+              {scoringResultLastEp && scoringResultLastEp.length > 0 ? (
+                <h4>
+                  ⚜ SCORING RE:UNION EP {scoringEpID}
+                  {scoringResultLastEp[0].scoringtype}⚜
+                </h4>
+              ) : (
+                <h4 className="pt-3">Loading...</h4>
+              )}
+            </Col>
+            <Col xs={12} md={5}>
+              <Row>
+                <Col>
+                  <h5>Filter By Episode:</h5>
+                </Col>
+                <Col>
+                  <Form.Group className="mb-3 ">
+                    <Form.Select
+                      value={scoringEpID}
+                      onChange={(e) => setscoringEpID(parseInt(e.target.value))} // Ensure this converts the value to an integer
+                    >
+                      {(Array.isArray(scoringEp) ? scoringEp : []).map(
+                        (episode) => (
+                          <option
+                            key={episode.scoringep_id}
+                            value={episode.scoringep_id}
+                          >
+                            {episode.scoringep_id} - {episode.title} -{" "}
+                            {episode.date}
+                          </option>
+                        )
+                      )}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
         </Row>
         <Row>
           <DataTable
             columns={tableHeader}
-            data={Array.isArray(scoringResultLastEp) ? scoringResultLastEp : []}
+            data={
+              scoringEpID === ""
+                ? Array.isArray(scoringResultLastEp)
+                  ? scoringResultLastEp
+                  : []
+                : Array.isArray(scoringResultByEpId)
+                ? scoringResultByEpId
+                : []
+            }
             customStyles={customStylesTable}
             pagination
           ></DataTable>

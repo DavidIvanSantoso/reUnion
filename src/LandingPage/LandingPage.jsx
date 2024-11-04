@@ -14,6 +14,12 @@ import img2 from "../assets/album/img2.jpg";
 import img3 from "../assets/album/img3.jpg";
 
 function LandingPage() {
+  const scrollToAboutPage = () => {
+    const element = document.getElementById("about-page");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   return (
     <Container fluid className="box-container">
       <Row className="navbar">
@@ -25,7 +31,9 @@ function LandingPage() {
             <img src={logo} alt="Logo" className="logo" />
             <h1 className="title">Re:UNION</h1>
             <h2 className="subtitle">Pump It Up Community from Surabaya</h2>
-            <Button className="learn-more-btn">Learn More!</Button>
+            <Button onClick={scrollToAboutPage} className="learn-more-btn">
+              Learn More!
+            </Button>
           </Col>
         </Row>
       </div>
@@ -92,7 +100,17 @@ function LandingPage() {
                   Address: Jl. Dr. Ir. H. Soekarno 35-39, Mulyorejo, Surabaya,
                   East Java 60115
                 </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
+                <Button
+                  variant="primary"
+                  onClick={() =>
+                    window.open(
+                      "https://maps.app.goo.gl/1nzPX2Z4CGEPJ45C7",
+                      "_blank"
+                    )
+                  }
+                >
+                  Open Google Maps!
+                </Button>
               </Card.Body>
             </Card>
           </Col>
@@ -105,7 +123,17 @@ function LandingPage() {
                   Address: Galaxy Mall, Jl. Dharmahusada Indah Timur No.37 Lt.
                   3, Mulyorejo, Kec. Mulyorejo, Surabaya, Jawa Timur 60115
                 </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
+                <Button
+                  variant="primary"
+                  onClick={() =>
+                    window.open(
+                      "https://maps.app.goo.gl/vdvTZ7sz3wiHLgRJ9",
+                      "_blank"
+                    )
+                  }
+                >
+                  Open Google Maps!
+                </Button>
               </Card.Body>
             </Card>
           </Col>
@@ -118,7 +146,17 @@ function LandingPage() {
                   Address: Jalan M Sungkono No.89, Gn. Sari, Kec. Dukuhpakis,
                   Surabaya, Jawa Timur 60224
                 </Card.Text>
-                <Button variant="primary">Go somewhere</Button>
+                <Button
+                  variant="primary"
+                  onClick={() =>
+                    window.open(
+                      "https://maps.app.goo.gl/jK88SzGShSPdYwx79",
+                      "_blank"
+                    )
+                  }
+                >
+                  Open Google Maps!
+                </Button>
               </Card.Body>
             </Card>
           </Col>

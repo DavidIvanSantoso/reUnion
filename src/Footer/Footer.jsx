@@ -8,11 +8,11 @@ function Footer() {
     <footer className="bg-dark text-white py-4">
       <Container>
         <Row>
-          <Col md={4} className="text-center">
+          <Col md={6} className="text-center">
             <h5>About Us</h5>
             <p>Just an ordinary Pump It Up Community</p>
           </Col>
-          <Col md={4} className="text-center">
+          {/* <Col md={4} className="text-center">
             <h5>Quick Links</h5>
             <ul className="list-unstyled">
               <li>
@@ -31,8 +31,8 @@ function Footer() {
                 </a>
               </li>
             </ul>
-          </Col>
-          <Col md={4} className="text-center">
+          </Col> */}
+          <Col md={6} className="text-center">
             <h5>Contact Us</h5>
             <a
               href="https://www.instagram.com/piu.reunion"

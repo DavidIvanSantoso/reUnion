@@ -28,6 +28,15 @@ export const getScoringResultLastEpisode = createAsyncThunk(
     return response.data; // Assuming the API response returns the data directly
   }
 );
+export const getScoringResultByEpisode = createAsyncThunk(
+  "scoring/getAllScoringResultByEpisode",
+  async (scoringEpID) => {
+    const response = await axios.get(
+      `http://localhost:8080/getScoringResultByID/${scoringEpID}`
+    );
+    return response.data; // Assuming the API response returns the data directly
+  }
+);
 export const getAllScoringEp = createAsyncThunk(
   "scoring/getAllScoringEp",
   async () => {
@@ -42,6 +51,7 @@ const scoringSlice = createSlice({
   initialState: {
     upcomingScoring: {},
     scoringResultLastEp: {},
+    scoringResultByEpId: {},
     scoringEp: {},
     loading: false,
     error: null,
@@ -79,6 +89,19 @@ const scoringSlice = createSlice({
         state.scoringResultLastEp = action.payload; // Store the fetched data
       })
       .addCase(getScoringResultLastEpisode.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message; // Capture any errors
+      })
+      //handle getAllScoringByEpID
+      .addCase(getScoringResultByEpisode.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getScoringResultByEpisode.fulfilled, (state, action) => {
+        state.loading = false;
+        state.scoringResultByEpId = action.payload; // Store the fetched data
+      })
+      .addCase(getScoringResultByEpisode.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message; // Capture any errors
       })
