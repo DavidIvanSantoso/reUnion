@@ -10,6 +10,8 @@ import Footer from "./Footer/Footer";
 import Login from "./AdminPanel/LoginForm";
 import Admin from "./AdminPanel/AdminDashboard";
 import AdminScoringMember from "./AdminPanel/InputScoringMember";
+import AdminSong from "./AdminPanel/InputSong";
+
 function App() {
   return (
     <>
@@ -22,6 +24,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/scoring" element={<AdminScoringMember />} />
+              <Route path="/admin/song" element={<AdminSong />} />
             </Routes>
           </div>
           <Footer />

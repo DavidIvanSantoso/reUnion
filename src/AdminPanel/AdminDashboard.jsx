@@ -31,7 +31,9 @@ function AdminDashboard() {
       scoringtype,
       date,
     };
+
     console.log("SCORING TYPE", scoringEpData.scoringtype);
+    // console.log("SCORING SONG EPISODE CHECK", scoringSong.scoringep_id);
     await dispatch(postScoringEp(scoringEpData));
   };
 
@@ -49,7 +51,7 @@ function AdminDashboard() {
     <Container fluid className="p-0">
       <div
         className="d-flex"
-        style={{ height: "80vh", padding: "0%", margin: "0%" }}
+        style={{ height: "100vh", padding: "0%", margin: "0%" }}
       >
         <div
           className="navbar-container"
@@ -131,6 +133,7 @@ function AdminDashboard() {
                           <option value={"Double"}>Double</option>
                         </Form.Select>
                       </Form.Group>
+
                       <Button variant="primary" type="submit" className="mt-3">
                         Submit
                       </Button>

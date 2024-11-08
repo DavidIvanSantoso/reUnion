@@ -11,6 +11,9 @@ function SidebarAdmin() {
         <Nav.Link as={Link} to="/admin/scoring" className="text-light">
           Scoring Member
         </Nav.Link>
+        <Nav.Link as={Link} to="/admin/song" className="text-light">
+          Song Input
+        </Nav.Link>
         {/* <Nav.Link as={Link} to="/services" className="text-light">
           Services
         </Nav.Link>

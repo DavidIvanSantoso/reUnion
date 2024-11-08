@@ -1,7 +1,18 @@
-import { Card, Container, Row, Col, Form } from "react-bootstrap";
+import {
+  Card,
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Modal,
+  ModalBody,
+} from "react-bootstrap";
 import NavbarTop from "../Navbar/Navbar";
 import "../Scoring/Scoring.css";
 import DataTable from "react-data-table-component";
+//youtube component
+import YouTube from "react-youtube";
 
 import { useEffect, useState } from "react";
 
@@ -14,10 +25,18 @@ import {
   getScoringResultByEpisode,
 } from "../redux/slices/scoringSlice.js";
 
+import { getAllSongByEp } from "../redux/slices/songSlice.js";
+
 function Scoring() {
   // const [upcomingScoring, setUpcomingScoring] = useState(null);
   // const [loading, setLoading] = useState(true);
   // const [error, setError] = useState(null);
+
+  //modal state
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleOpen = () => setShow(true);
+
   const [scoringEpID, setscoringEpID] = useState("");
   const dispatch = useDispatch();
   const {
@@ -27,7 +46,26 @@ function Scoring() {
     error,
     scoringEp,
     scoringResultByEpId,
-  } = useSelector((state) => state.scoring);
+    songRes,
+  } = useSelector((state) => ({ ...state.scoring, ...state.song }));
+
+  // State for categorized songs
+  const [noviceSongs, setNoviceSongs] = useState([]);
+  const [intermediateSongs, setIntermediateSongs] = useState([]);
+  const [advancedSongs, setAdvancedSongs] = useState([]);
+  const [expertSongs, setExpertSongs] = useState([]);
+
+  // Fetch and categorize songs
+  useEffect(() => {
+    if (songRes && songRes.length > 0) {
+      setNoviceSongs(songRes.filter((song) => song.kategori === "Novice"));
+      setIntermediateSongs(
+        songRes.filter((song) => song.kategori === "Intermediate")
+      );
+      setAdvancedSongs(songRes.filter((song) => song.kategori === "Advanced"));
+      setExpertSongs(songRes.filter((song) => song.kategori === "Expert"));
+    }
+  }, [songRes]);
 
   //scoring-table
   const tableHeader = [
@@ -113,7 +151,18 @@ function Scoring() {
   //   }
   // };
 
-  //get UpcomingScoring using redux
+  //youtube config
+  const onPlayerReady = (event) => {
+    event.target.pauseVideo(); // The video will be paused on load (optional)
+  };
+  const opts = {
+    height: "390",
+    width: "100%",
+    playerVars: {
+      autoplay: 0, // Auto-play the video
+    },
+  };
+  //get UpcomingScoring & Song using redux
   useEffect(() => {
     if (scoringEpID) {
       dispatch(getScoringResultByEpisode(scoringEpID));
@@ -125,6 +174,12 @@ function Scoring() {
     dispatch(getAllScoringEp());
     dispatch(getScoringResultLastEpisode());
   }, [dispatch]); // Run only once on component mount
+
+  useEffect(() => {
+    if (upcomingScoring && upcomingScoring.scoringep_id) {
+      dispatch(getAllSongByEp(upcomingScoring.scoringep_id));
+    }
+  }, [dispatch, upcomingScoring]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -147,15 +202,200 @@ function Scoring() {
               <p>📍Location: {upcomingScoring.location}</p>
               <p>🕔 Time: {upcomingScoring.time}</p>
 
-              <span className="badge bg-success me-2">Novice (S8-S11)</span>
+              <span className="badge bg-success me-2">Novice (D/S8-D/S11)</span>
               <span className="badge bg-warning me-2">
-                Intermediate (S12 - S14)
+                Intermediate (D/S12 - D/S14)
               </span>
-              <span className="badge bg-danger me-2">Advanced (S15 - S17)</span>
-              <span className="badge bg-dark me-2">Expert (S18 - S20)</span>
+              <span className="badge bg-danger me-2">
+                Advanced (D/S15 - D/S17)
+              </span>
+              <span className="badge bg-dark me-2">Expert (D/S18 - D/S20)</span>
+              <div className="modal-button">
+                <Button onClick={handleOpen} className="mt-3" variant="primary">
+                  Check Song!
+                </Button>
+              </div>
             </Card.Body>
           </Card>
         </Row>
+      </div>
+
+      {/* Modal */}
+      <div className="modal show">
+        <Modal show={show} onHide={handleClose} size="xl">
+          <Modal.Header closeButton></Modal.Header>
+          <ModalBody>
+            {/* Novice Songs */}
+            <Row>
+              <h1>Novice Songs!</h1>
+              {/* Divide into two columns */}
+              <Col xs={12} md={6}>
+                {/* First column */}
+                {noviceSongs
+                  .slice(0, Math.ceil(noviceSongs.length / 2))
+                  .map((song, index) => (
+                    <div key={index}>
+                      <h3>Song {index + 1}:</h3>
+                      <YouTube
+                        videoId={song.linksong}
+                        opts={opts}
+                        onReady={onPlayerReady}
+                        className="w-100"
+                      />
+                    </div>
+                  ))}
+              </Col>
+
+              <Col xs={12} md={6}>
+                {/* Second column */}
+                {noviceSongs
+                  .slice(Math.ceil(noviceSongs.length / 2))
+                  .map((song, index) => (
+                    <div key={index}>
+                      <h3>
+                        Song {index + 1 + Math.ceil(noviceSongs.length / 2)}:
+                      </h3>
+                      <YouTube
+                        videoId={song.linksong}
+                        opts={opts}
+                        onReady={onPlayerReady}
+                        className="w-100"
+                      />
+                    </div>
+                  ))}
+              </Col>
+            </Row>
+
+            {/* Intermediate Songs */}
+            <Row>
+              <h1>Intermediate Songs!</h1>
+              {/* Divide into two columns */}
+              <Col xs={12} md={6}>
+                {/* First column */}
+                {intermediateSongs
+                  .slice(0, Math.ceil(intermediateSongs.length / 2))
+                  .map((song, index) => (
+                    <div key={index}>
+                      <h3>Song {index + 1}:</h3>
+                      <YouTube
+                        videoId={song.linksong}
+                        opts={opts}
+                        onReady={onPlayerReady}
+                        className="w-100"
+                      />
+                    </div>
+                  ))}
+              </Col>
+
+              <Col xs={12} md={6}>
+                {/* Second column */}
+                {intermediateSongs
+                  .slice(Math.ceil(intermediateSongs.length / 2))
+                  .map((song, index) => (
+                    <div key={index}>
+                      <h3>
+                        Song{" "}
+                        {index + 1 + Math.ceil(intermediateSongs.length / 2)}:
+                      </h3>
+                      <YouTube
+                        videoId={song.linksong}
+                        opts={opts}
+                        onReady={onPlayerReady}
+                        className="w-100"
+                      />
+                    </div>
+                  ))}
+              </Col>
+            </Row>
+
+            {/* Advanced Songs */}
+            <Row>
+              <h1>Advanced Songs!</h1>
+              {/* Divide into two columns */}
+              <Col xs={12} md={6}>
+                {/* First column */}
+                {advancedSongs
+                  .slice(0, Math.ceil(advancedSongs.length / 2))
+                  .map((song, index) => (
+                    <div key={index}>
+                      <h3>Song {index + 1}:</h3>
+                      <YouTube
+                        videoId={song.linksong}
+                        opts={opts}
+                        onReady={onPlayerReady}
+                        className="w-100"
+                      />
+                    </div>
+                  ))}
+              </Col>
+
+              <Col xs={12} md={6}>
+                {/* Second column */}
+                {advancedSongs
+                  .slice(Math.ceil(advancedSongs.length / 2))
+                  .map((song, index) => (
+                    <div key={index}>
+                      <h3>
+                        Song {index + 1 + Math.ceil(advancedSongs.length / 2)}:
+                      </h3>
+                      <YouTube
+                        videoId={song.linksong}
+                        opts={opts}
+                        onReady={onPlayerReady}
+                        className="w-100"
+                      />
+                    </div>
+                  ))}
+              </Col>
+            </Row>
+
+            {/* Expert Songs */}
+            <Row>
+              <h1>Expert Songs!</h1>
+              {/* Divide into two columns */}
+              <Col xs={12} md={6}>
+                {/* First column */}
+                {expertSongs
+                  .slice(0, Math.ceil(expertSongs.length / 2))
+                  .map((song, index) => (
+                    <div key={index}>
+                      <h3>Song {index + 1}:</h3>
+                      <YouTube
+                        videoId={song.linksong}
+                        opts={opts}
+                        onReady={onPlayerReady}
+                        className="w-100"
+                      />
+                    </div>
+                  ))}
+              </Col>
+
+              <Col xs={12} md={6}>
+                {/* Second column */}
+                {expertSongs
+                  .slice(Math.ceil(expertSongs.length / 2))
+                  .map((song, index) => (
+                    <div key={index}>
+                      <h3>
+                        Song {index + 1 + Math.ceil(expertSongs.length / 2)}:
+                      </h3>
+                      <YouTube
+                        videoId={song.linksong}
+                        opts={opts}
+                        onReady={onPlayerReady}
+                        className="w-100"
+                      />
+                    </div>
+                  ))}
+              </Col>
+            </Row>
+          </ModalBody>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
       <div className="recent-result pt-5 px-5 mb-3">
         <Row>
